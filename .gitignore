@@ -1,2 +1,5 @@
 /.venv
 /audio
+/img
+view/__pycache__
+machine/__pycache__

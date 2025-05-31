@@ -2,6 +2,7 @@ from gtts import gTTS
 from playsound import playsound
 from pathlib import Path
 import subprocess
+from datetime import datetime as dt
 
 class Gerador:
 
@@ -31,22 +32,24 @@ class Gerador:
                 folder.mkdir(exist_ok=True)
                 return folder
 
-    def generate_audio(self):
+    def generate_audio(self,fragment):
         souce = self.create_folder_voz()
         audio = gTTS(
-            text=self.text,
+            text=fragment,
             lang = self.linguage
         )
-        audio.save(f'{souce}audio_original.mp3')
+        audio.save(f'{souce}/audio_original.mp3')
+        self.speedup_audio()
 
     def speedup_audio(self):
         souce = self.create_folder_voz()
         speed_up = 1.5
-        output_file = f'{souce}audio_padrao.mp3'
+        datetime = format(dt.today(),'%d_%m_%y_%H_%M_%S')
+        output_file = f'{souce}/{datetime}.mp3'
 
         comando = [
             "ffmpeg", "-y",
-            "-i", f'{souce}audio_original.mp3',
+            "-i", f'{souce}/audio_original.mp3',
             "-filter:a", f"atempo={speed_up}",
             "-vn", output_file
         ]
