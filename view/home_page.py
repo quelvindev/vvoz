@@ -25,25 +25,31 @@ class HomePage:
             self.text.value = ''
             self.text.focus()
             self.page.update()
+        self.text_info.spans = [ft.TextSpan("Aguardando texto",
+                    ft.TextStyle(weight=ft.FontWeight.BOLD),)]
     def gettext(self,e):
          
          self.page.update()
          if  self.text.value.strip():
             self.text_info.spans = [ft.TextSpan("Texto coletado",
-                    ft.TextStyle(weight=ft.FontWeight.BOLD),)]
+                    ft.TextStyle(weight=ft.FontWeight.BOLD,color='#445588'),)]
             self.page.update()
-            self.fragment.create_folder_voz()
             self.text_info.spans = [ft.TextSpan("Gerado Audio Original",
-                    ft.TextStyle(weight=ft.FontWeight.BOLD),)]
+                    ft.TextStyle(weight=ft.FontWeight.BOLD,color="#444E88"),)]
+            self.fragment.create_folder_voz()
             self.page.update()
-            self.fragment.generate_audio(self.text.value)
             self.text_info.spans = [ft.TextSpan("Gerado audio Padrão",
-                    ft.TextStyle(weight=ft.FontWeight.BOLD),)]
+                    ft.TextStyle(weight=ft.FontWeight.BOLD,color="#314EA5"),)]
+            self.fragment.generate_audio(self.text.value)
+            self.text_info.spans = [ft.TextSpan("Audio gerado!",
+                    ft.TextStyle(weight=ft.FontWeight.BOLD,color="#6E7DAA"),)]
             self.page.update()
 
          
     def copy_pix(self):
-        ...    
+        ...
+    def playaudio(self,e):
+        self.fragment.play_audio()  
     def column_one(self,screen_width,screen_height):
 
         self.text = ft.TextField(   label="Texto",
@@ -55,7 +61,7 @@ class HomePage:
                                     min_lines=10)
         self.text_info = ft.Text(   color="#000000",
                                     selectable=True, 
-                                    spans=[ft.TextSpan("Insira o link na caixa de texto!",
+                                    spans=[ft.TextSpan("Aguardando texto",
                                                         ft.TextStyle(weight=ft.FontWeight.BOLD),
                                                         ),])
         self.btn_clear = ft.IconButton(
@@ -65,7 +71,7 @@ class HomePage:
                                     tooltip='Limpar',
                                     alignment=ft.alignment.center,
                                     on_click=self.getClear)
-        self.btn_download =  ft.FilledButton(
+        self.btn_convert =  ft.FilledButton(
                                             text="Gerar",
                                             width=screen_width*0.2,
                                             height=50,
@@ -73,36 +79,44 @@ class HomePage:
         self.btnplay =  ft.FilledButton(
                                             text="Play",
                                             width=screen_width*0.2,
-                                            height=50,
+                                            height=42,
                                             icon=ft.Icons.PLAY_ARROW_SHARP,
                                             color="#FFFFFF",
-                                            bgcolor="#562FC0"
-                                #on_click=lambda e: page.open(sby),
-                                )
+                                            style=ft.ButtonStyle(
+                                                    shape=ft.RoundedRectangleBorder(radius=0),  
+                                                    padding=0 ,bgcolor="#562FC0"                                
+                                                ),
+                                            
+                                            on_click=self.playaudio,
+                                        )
         self.btn_stop = ft.IconButton(
                                     icon=ft.Icons.CLEAR,
                                     icon_color="#FFFFFF",
-                                    bgcolor="#562FC0",
+                                    #bgcolor="#562FC0",
+                                     style=ft.ButtonStyle(
+                                    shape=ft.RoundedRectangleBorder(radius=0),  
+                                                padding=10, 
+                                                bgcolor="#562FC0"),
                                    # icon_size=60,
                                     tooltip='Parar',
                                     alignment=ft.alignment.center,
                                     
                                     on_click=self.getClear)
-        self.column_left =  ft.Column(   expand=True,
-                                spacing=2,
-                                width= screen_width*0.7,
-                                height = screen_height,
-                                alignment=ft.MainAxisAlignment.START,
-                                controls=[ 
-                                        ft.Container(content= 
+        self.column_left =  ft.Column(  expand=True,
+                                        spacing=2,
+                                        width= screen_width*0.7,
+                                        height = screen_height,
+                                        alignment=ft.MainAxisAlignment.START,
+                                        controls=[ 
+                                            ft.Container(content= 
                                                         self.text,
                                                         alignment=ft.alignment.top_left,
                                                         width=screen_width*0.7,
                                                         height = screen_height*0.68,
                                                         padding=0.5,
                                                         margin=0.5),
-                                        ft.Divider( color="#FFFFFF"),
-                                        ft.Container(content= 
+                                            ft.Divider( color="#FFFFFF"),
+                                            ft.Container(content= 
                                                         self.text_info ,
                                                         bgcolor= "#D3D3D3",
                                                         alignment=ft.alignment.center_left,
@@ -116,7 +130,8 @@ class HomePage:
                                         spacing=2,
                                         width= screen_width*0.2,
                                         height = screen_height,
-                                       # alignment=ft.MainAxisAlignment.START,
+                                        
+                                        alignment=ft.MainAxisAlignment.START,
                                         controls=[ 
                                                 ft.Row([     
                                                         ft.Container(content=  
@@ -128,7 +143,7 @@ class HomePage:
                                                                         margin=0.005),
 
                                                         ft.Container(content=
-                                                                        self.btn_download,
+                                                                        self.btn_convert,
                                                                         alignment=ft.alignment.top_right,
                                                                         height = screen_height*0.30,
                                                                         padding=0.5,
@@ -151,15 +166,17 @@ class HomePage:
                                                                         padding=0.5,
                                                                         margin=0.5,
                                                                         width=screen_width*0.18) 
-                                                        ]),
+                                                        ],alignment=ft.alignment.center),
 
                                                 ft.Row([
                                                         ft.Container(
-                                                            bgcolor= "#D3D3D3",
-                                                            
-                                                            height=screen_height*0.1,
+                                                           bgcolor= "#9E9D9D",
+                                                            height=screen_height,
                                                             #padding=ft.padding.all(0),
                                                             alignment=ft.alignment.bottom_right,
+                                                            padding=0.5,
+                                                            margin=0.5
+                                                            ,
                                                         content= 
                                                             ft.Row(
                                                                 alignment=ft.MainAxisAlignment.END,  
@@ -196,58 +213,7 @@ class HomePage:
                                                         ),
                                                     ]
                                                 )])
-        def footer():
-            return  ft.Row(spacing=2,
-                        controls=[
-                            
-                        
-
-                            ft.Container(
-                                content= ft.Row(
-                                            alignment=ft.MainAxisAlignment.END,  # <- alinha todos os itens à direita
-                                            expand=True,
-                                            controls=[   
-                                                ft.IconButton(
-                                                    padding = ft.padding.only(2,5,2,5),
-                                                    #mouse_cursor = ft.MouseCursor.ZOOM_IN,
-                                                    tooltip="Linkedin",
-                                                    on_click=lambda e: self.page.launch_url("https://www.linkedin.com/in/quelvincarvalho/"),
-                                                    content=ft.Image(src='img/linkedin.png')
-                                                ),
-                                                ft.IconButton(
-                                                    padding = ft.padding.only(2,5,2,5),
-                                                    tooltip="Github",
-                                                    on_click=lambda e: self.page.launch_url("https://github.com/quelvindev"),
-                                                    content=ft.Image(src='img/github.png')
-                                                ),
-                                                 ft.IconButton(
-                                                    padding = ft.padding.only(2,5,2,5),
-                                                    tooltip="Site",
-                                                    on_click=lambda e: self.page.launch_url("https://quelvindev.github.io/meusite/"),
-                                                    content=ft.Image(src='img/site.png')
-                                                ),
-                                                 ft.IconButton(
-                                                    padding = ft.padding.only(2,5,2,5),
-                                                    tooltip="Doe - Colabore",
-                                                    #on_click=lambda e: self.page.set_clipboard("https://github.com/quelvindev"),
-                                                    on_click= self.copy_pix,
-                                                    content=ft.Image(src='img/doe.png')
-                                                )
-                                                
-                                                ],
-                                        
-
-                                                ),
-                                            bgcolor= "#D3D3D3",
-                                            width=screen_width*0.45,
-                                            height=screen_height*0.1,
-                                            padding=ft.padding.all(0),
-                                            alignment=ft.alignment.center_right,
-                                        ),
-          
-
-
-                                ])
+        
 
 
         column = ft.Row(
