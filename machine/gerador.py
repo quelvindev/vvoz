@@ -3,6 +3,7 @@ from playsound import playsound
 from pathlib import Path
 import subprocess
 import os
+import pygame
 from datetime import datetime as dt
 
 class Gerador:
@@ -13,6 +14,7 @@ class Gerador:
         self.my_folder_voz= 'vvoz'
         self.linguage = 'pt-br'
         self.text = text
+        self.datetime = None
         try:
             result = subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             if result.returncode == 0:
@@ -22,6 +24,8 @@ class Gerador:
                 print("FFmpeg não foi encontrado.")
         except FileNotFoundError:
             print("FFmpeg não está instalado ou não está no PATH.")
+        pygame.init()
+        pygame.mixer.init()
 
 
     def create_folder_voz(self):
@@ -45,8 +49,8 @@ class Gerador:
     def speedup_audio(self):
         source = self.create_folder_voz()
         speed_up = 1.5
-        datetime = format(dt.today(),'%d_%m_%y_%H_%M_%S')
-        output_file = f'{source}/{datetime}.mp3'
+        self.datetime = format(dt.today(),'%d_%m_%y_%H_%M_%S')
+        output_file = f'{source}/{self.datetime}.mp3'
 
         comando = [
             "ffmpeg", "-y",
@@ -57,39 +61,17 @@ class Gerador:
 
         subprocess.run(comando)
         os.remove(f'{source}/audio_original.mp3')
+        return self.datetime
     def play_audio(self):
         source = self.create_folder_voz()
-        print(source)
-        with os.scandir(source) as itens:
-            for item in itens:
-                print(item.name)
+        pygame.mixer.music.load(f'{source}/{self.datetime}.mp3')
+        pygame.mixer.music.play()
 
-        '''
+    def pause_audio(self):
+        pygame.mixer.music.pause()
 
-        import os
-from datetime import datetime
+    def unpause_audio(sefl):
+        pygame.mixer.music.unpause()
 
-pasta = "sua_pasta/"
-formato = "%d_%m_%y_%H_%M_%S"
-
-mais_recente = None
-data_mais_recente = None
-
-for nome in os.listdir(pasta):
-    try:
-        # Tenta extrair a data do nome do arquivo (sem extensão)
-        nome_sem_extensao = os.path.splitext(nome)[0]
-        data = datetime.strptime(nome_sem_extensao, formato)
-
-        if data_mais_recente is None or data > data_mais_recente:
-            data_mais_recente = data
-            mais_recente = nome
-
-    except ValueError:
-        # Ignora arquivos que não seguem o padrão de nome
-        continue
-
-print("Arquivo mais recente:", mais_recente)
-
-        '''
-        #playsound("voz_rapida.mp3")
+    def stop_audio(self):
+        pygame.mixer.music.stop()

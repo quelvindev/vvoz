@@ -19,7 +19,7 @@ class HomePage:
         page.update()
         
     
-    def getClear(self,e):
+    def clear_text(self,e):
         
         if self.text.value.strip():
             self.text.value = ''
@@ -27,7 +27,7 @@ class HomePage:
             self.page.update()
         self.text_info.spans = [ft.TextSpan("Aguardando texto",
                     ft.TextStyle(weight=ft.FontWeight.BOLD),)]
-    def gettext(self,e):
+    def get_text(self,e):
          
          self.page.update()
          if  self.text.value.strip():
@@ -43,13 +43,37 @@ class HomePage:
             self.fragment.generate_audio(self.text.value)
             self.text_info.spans = [ft.TextSpan("Audio gerado!",
                     ft.TextStyle(weight=ft.FontWeight.BOLD,color="#6E7DAA"),)]
+            self.btn_play.disabled = False
+            self.btn_stop.disabled = False
             self.page.update()
 
          
     def copy_pix(self):
         ...
-    def playaudio(self,e):
-        self.fragment.play_audio()  
+    def unpause_audio(self,e):
+        self.fragment.unpause_audio()
+        self.btn_play.icon=ft.Icons.PAUSE
+        self.btn_play.on_click = self.pause_audio
+        self.page.update()
+
+    def pause_audio(self,e):
+        self.fragment.pause_audio()
+        self.btn_play.icon=ft.Icons.PLAY_ARROW_SHARP
+        self.btn_play.on_click = self.unpause_audio
+        self.page.update()
+
+    def play_audio(self,e):
+        self.fragment.play_audio() 
+        self.btn_play.icon=ft.Icons.PAUSE
+        self.btn_play.on_click = self.pause_audio
+        self.page.update()
+
+    def stop_audio(self,e):
+        self.fragment.stop_audio()
+        self.btn_play.icon=ft.Icons.PLAY_ARROW_SHARP
+        self.btn_play.on_click= self.play_audio
+        self.page.update()
+
     def column_one(self,screen_width,screen_height):
 
         self.text = ft.TextField(   label="Texto",
@@ -66,42 +90,57 @@ class HomePage:
                                                         ),])
         self.btn_clear = ft.IconButton(
                                     icon=ft.Icons.CLEAR,
-                                    icon_color="#F7513B",
-                                    icon_size=30,
+                                    icon_color="#FFFFFF",                                    
+                                    height=50,
                                     tooltip='Limpar',
                                     alignment=ft.alignment.center,
-                                    on_click=self.getClear)
+                                    style=ft.ButtonStyle(
+                                        shape=ft.RoundedRectangleBorder(radius=0),  
+                                                padding=0, 
+                                                bgcolor={"": "#000000", 
+                                                         "disabled": "#999999"},),
+                                    on_click=self.clear_text)
         self.btn_convert =  ft.FilledButton(
                                             text="Gerar",
                                             width=screen_width*0.2,
                                             height=50,
-                                            on_click= self.gettext)
-        self.btnplay =  ft.FilledButton(
+                                            #alignment=ft.alignment.center,
+                                            style=ft.ButtonStyle(
+                                                shape=ft.RoundedRectangleBorder(radius=10),  
+                                                padding=0, 
+                                                bgcolor={"": "#84A3E6", "disabled": "#999999"}
+                                            ),
+                                            on_click= self.get_text)
+        self.btn_play =  ft.FilledButton(
                                             text="Play",
                                             width=screen_width*0.2,
-                                            height=42,
+                                            height=50,
                                             icon=ft.Icons.PLAY_ARROW_SHARP,
-                                            color="#FFFFFF",
+                                            disabled=True,
                                             style=ft.ButtonStyle(
                                                     shape=ft.RoundedRectangleBorder(radius=0),  
-                                                    padding=0 ,bgcolor="#562FC0"                                
+                                                    padding=0 , 
+                                                    bgcolor={"": "#562FC0", "disabled": "#999999"},                               
                                                 ),
                                             
-                                            on_click=self.playaudio,
+                                            on_click=self.play_audio,
                                         )
         self.btn_stop = ft.IconButton(
-                                    icon=ft.Icons.CLEAR,
+                                    icon=ft.Icons.STOP,
                                     icon_color="#FFFFFF",
-                                    #bgcolor="#562FC0",
-                                     style=ft.ButtonStyle(
-                                    shape=ft.RoundedRectangleBorder(radius=0),  
-                                                padding=10, 
-                                                bgcolor="#562FC0"),
-                                   # icon_size=60,
+                                    height=50,
+                                    disabled=True,
                                     tooltip='Parar',
                                     alignment=ft.alignment.center,
-                                    
-                                    on_click=self.getClear)
+                                    style=ft.ButtonStyle(
+                                        shape=ft.RoundedRectangleBorder(radius=0),  
+                                                padding=0, 
+                                                bgcolor={"": "#562FC0", 
+                                                         "disabled": "#999999"},),
+                                    on_click=self.stop_audio)
+        
+        self.btm_time = ft.Slider( min=1.0, max=2.0, divisions=20, label="{value}",width=screen_width)
+
         self.column_left =  ft.Column(  expand=True,
                                         spacing=2,
                                         width= screen_width*0.7,
@@ -138,31 +177,40 @@ class HomePage:
                                                                         self.btn_clear,
                                                                         alignment=ft.alignment.top_left,
                                                                         width=screen_width*0.05,
-                                                                        height = screen_height*0.30,
+                                                                        #height = screen_height*0.30,
                                                                         padding=0.005,
-                                                                        margin=0.005),
+                                                                       # margin=0.005
+                                                                       ),
 
                                                         ft.Container(content=
                                                                         self.btn_convert,
                                                                         alignment=ft.alignment.top_right,
-                                                                        height = screen_height*0.30,
+                                                                        #height = screen_height*0.30,
                                                                         padding=0.5,
-                                                                        margin=0.5,
+                                                                        #margin=0.5,
                                                                         width=screen_width*0.18) 
                                                         ]),
-                                                    ft.Row([     
+                                                ft.Row([ 
+                                                        ft.Container(content=
+                                                                        self.btm_time,
+                                                                        width=screen_width*0.25,
+                                                                        padding=0.5,
+                                                                        margin=0.5,
+                                                                        alignment=ft.alignment.top_left,
+                                                                         ) ]),
+                                                ft.Row([     
                                                         ft.Container(content=  
                                                                         self.btn_stop,
                                                                         alignment=ft.alignment.top_left,
-                                                                        #width=screen_width*0.05,
-                                                                        height = screen_height*0.42,
+                                                                        width=screen_width*0.05,
+                                                                        height = screen_height*0.30,
                                                                         padding=0.005,
                                                                         margin=0.005),
 
                                                         ft.Container(content=
-                                                                        self.btnplay,
+                                                                        self.btn_play,
                                                                         alignment=ft.alignment.top_right,
-                                                                        height = screen_height*0.42,
+                                                                        height = screen_height*0.30,
                                                                         padding=0.5,
                                                                         margin=0.5,
                                                                         width=screen_width*0.18) 
@@ -171,11 +219,10 @@ class HomePage:
                                                 ft.Row([
                                                         ft.Container(
                                                            bgcolor= "#9E9D9D",
-                                                            height=screen_height,
-                                                            #padding=ft.padding.all(0),
-                                                            alignment=ft.alignment.bottom_right,
+                                                            height=screen_height*0.0999,
+                                                            alignment=ft.alignment.bottom_center,
                                                             padding=0.5,
-                                                            margin=0.5
+                                                            margin=ft.margin.only(top =44)
                                                             ,
                                                         content= 
                                                             ft.Row(
@@ -221,10 +268,6 @@ class HomePage:
                     controls=[
                        ft.Column([self.column_left]), 
                        ft.Column([self.column_right]) 
-                       
-   
-                       # ft.Divider( color="#FFFFFF"),
-                       # footer()
                 ]
         )
 
