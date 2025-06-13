@@ -7,10 +7,11 @@ class HomePage:
     def __init__(self,page:ft.Page= None):
         self.page = page
         self.fragment = Gerador()
+        self.btn_time = 1.0
         monitor = esif.get_monitors()[0]
         screen_width = monitor.width*0.4
         screen_height = monitor.height*0.3
-        page.title = 'Donwload de Vídeos'
+        page.title = 'Gerador de audio -Vvoz'
         page.window.alignment = ft.alignment.center
         page.window.width = screen_width
         page.window.height = screen_height
@@ -40,7 +41,7 @@ class HomePage:
             self.page.update()
             self.text_info.spans = [ft.TextSpan("Gerado audio Padrão",
                     ft.TextStyle(weight=ft.FontWeight.BOLD,color="#314EA5"),)]
-            self.fragment.generate_audio(self.text.value)
+            self.fragment.generate_audio(self.text.value,self.btn_time.label)
             self.text_info.spans = [ft.TextSpan("Audio gerado!",
                     ft.TextStyle(weight=ft.FontWeight.BOLD,color="#6E7DAA"),)]
             self.btn_play.disabled = False
@@ -48,8 +49,17 @@ class HomePage:
             self.page.update()
 
          
-    def copy_pix(self):
-        ...
+    def copy_pix(self,e):
+        key = 'b39a79bd-3de3-4f36-8fbe-5dda50038de9'
+        self.page.set_clipboard(key)
+        self.text_info.spans = [
+                ft.TextSpan(
+                    "Chave Pix copiada com sucesso!",
+                    ft.TextStyle(weight=ft.FontWeight.BOLD, color="#463AEE"),
+                )
+            ]
+        
+        self.page.update()
     def unpause_audio(self,e):
         self.fragment.unpause_audio()
         self.btn_play.icon=ft.Icons.PAUSE
@@ -72,6 +82,10 @@ class HomePage:
         self.fragment.stop_audio()
         self.btn_play.icon=ft.Icons.PLAY_ARROW_SHARP
         self.btn_play.on_click= self.play_audio
+        self.page.update()
+
+    def on_slider_change(self, e):
+        self.btn_time.label  = f"{e.control.value:.1f}"
         self.page.update()
 
     def column_one(self,screen_width,screen_height):
@@ -139,7 +153,14 @@ class HomePage:
                                                          "disabled": "#999999"},),
                                     on_click=self.stop_audio)
         
-        self.btm_time = ft.Slider( min=1.0, max=2.0, divisions=20, label="{value}",width=screen_width)
+        self.btn_time = ft.Slider( min=1.0, 
+                                  max=2.0, 
+                                  divisions=10, 
+                                  label=self.btn_time,
+                                  width=screen_width,
+                                  on_change=self.on_slider_change
+                                  )
+        
 
         self.column_left =  ft.Column(  expand=True,
                                         spacing=2,
@@ -167,7 +188,7 @@ class HomePage:
             
         self.column_right = ft.Column(  expand=True,
                                         spacing=2,
-                                        width= screen_width*0.2,
+                                        width= screen_width*0.3,
                                         height = screen_height,
                                         
                                         alignment=ft.MainAxisAlignment.START,
@@ -177,7 +198,7 @@ class HomePage:
                                                                         self.btn_clear,
                                                                         alignment=ft.alignment.top_left,
                                                                         width=screen_width*0.05,
-                                                                        #height = screen_height*0.30,
+                                                                        height = screen_height*0.20,
                                                                         padding=0.005,
                                                                        # margin=0.005
                                                                        ),
@@ -185,17 +206,17 @@ class HomePage:
                                                         ft.Container(content=
                                                                         self.btn_convert,
                                                                         alignment=ft.alignment.top_right,
-                                                                        #height = screen_height*0.30,
+                                                                        height = screen_height*0.20,
                                                                         padding=0.5,
                                                                         #margin=0.5,
                                                                         width=screen_width*0.18) 
                                                         ]),
                                                 ft.Row([ 
                                                         ft.Container(content=
-                                                                        self.btm_time,
+                                                                        self.btn_time,
                                                                         width=screen_width*0.25,
                                                                         padding=0.5,
-                                                                        margin=0.5,
+                                                                        margin=ft.margin.only(bottom =40),
                                                                         alignment=ft.alignment.top_left,
                                                                          ) ]),
                                                 ft.Row([     
@@ -203,14 +224,14 @@ class HomePage:
                                                                         self.btn_stop,
                                                                         alignment=ft.alignment.top_left,
                                                                         width=screen_width*0.05,
-                                                                        height = screen_height*0.30,
+                                                                        height = screen_height*0.25,
                                                                         padding=0.005,
                                                                         margin=0.005),
 
                                                         ft.Container(content=
                                                                         self.btn_play,
                                                                         alignment=ft.alignment.top_right,
-                                                                        height = screen_height*0.30,
+                                                                        height = screen_height*0.25,
                                                                         padding=0.5,
                                                                         margin=0.5,
                                                                         width=screen_width*0.18) 
@@ -219,14 +240,14 @@ class HomePage:
                                                 ft.Row([
                                                         ft.Container(
                                                            bgcolor= "#9E9D9D",
-                                                            height=screen_height*0.0999,
+                                                            height=screen_height*0.10,
                                                             alignment=ft.alignment.bottom_center,
-                                                            padding=0.5,
-                                                            margin=ft.margin.only(top =44)
+                                                           # padding=0.5,
+                                                            margin=ft.margin.only(top =0,bottom=20)
                                                             ,
                                                         content= 
                                                             ft.Row(
-                                                                alignment=ft.MainAxisAlignment.END,  
+                                                                alignment=ft.MainAxisAlignment.CENTER,  
                                                                 expand=True,
                                                                 controls=[   
                                                                     ft.IconButton(
@@ -251,14 +272,15 @@ class HomePage:
                                                                     ft.IconButton(
                                                                         padding = ft.padding.only(2,5,2,5),
                                                                         tooltip="Doe - Colabore",
-                                                                        #on_click=lambda e: self.page.set_clipboard("https://github.com/quelvindev"),
-                                                                        on_click= self.copy_pix,
+                                                                        
+                                                                        on_click=self.copy_pix,
                                                                         content=ft.Image(src='img/doe.png')
                                                                     )
                                                                 ],
                                                             ),
                                                         ),
                                                     ]
+                                                    
                                                 )])
         
 

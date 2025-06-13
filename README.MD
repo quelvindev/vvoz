@@ -1,4 +1,4 @@
-# Gere audio de Textos com Python :rocket:
+# Gere audio a partir Textos com Python :rocket:
 
 ## Necessário instalar o FFmpeg
 1. Baixe o FFmpeg Acesse: [Aqui](https://ffmpeg.org/download.html). Para Windows o caminho mais fácil é [Aqui](https://www.gyan.dev/ffmpeg/builds/)

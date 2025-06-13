@@ -37,18 +37,18 @@ class Gerador:
                 folder.mkdir(exist_ok=True)
                 return folder
 
-    def generate_audio(self,fragment):
+    def generate_audio(self,fragment,speed_up):
         souce = self.create_folder_voz()
         audio = gTTS(
             text=fragment,
             lang = self.linguage
         )
         audio.save(f'{souce}/audio_original.mp3')
-        self.speedup_audio()
+        self.speedup_audio(speed_up)
 
-    def speedup_audio(self):
+    def speedup_audio(self,speed_up = 1.5):
         source = self.create_folder_voz()
-        speed_up = 1.5
+        
         self.datetime = format(dt.today(),'%d_%m_%y_%H_%M_%S')
         output_file = f'{source}/{self.datetime}.mp3'
 
