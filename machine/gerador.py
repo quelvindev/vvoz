@@ -15,15 +15,19 @@ class Gerador:
         self.linguage = 'pt-br'
         self.text = text
         self.datetime = None
+        self.istalffmeg = None
         try:
             result = subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             if result.returncode == 0:
-                print("FFmpeg está instalado!")
-                print("Versão detectada:\n", result.stdout.splitlines()[0])
+                #print("FFmpeg está instalado!")
+                #print("FFmpeg está instalado! Versão detectada:\n", result.stdout.splitlines()[0])
+                self.istalffmeg = "FFmpeg está instalado! FFmpeg está instalado! Versão detectada:\n", result.stdout.splitlines()[0]
             else:
-                print("FFmpeg não foi encontrado.")
+                #print("FFmpeg não foi encontrado.")
+                self.istalffmeg = "FFmpeg não foi encontrado."
         except FileNotFoundError:
-            print("FFmpeg não está instalado ou não está no PATH.")
+            # print("FFmpeg não está instalado ou não está no PATH.")
+            self.istalffmeg = "FFmpeg não está instalado ou não está no PATH."
         pygame.init()
         pygame.mixer.init()
 

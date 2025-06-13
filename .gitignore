@@ -3,3 +3,6 @@
 /img
 view/__pycache__
 machine/__pycache__
+app.spec
+/dist
+/build

@@ -11,7 +11,6 @@
     - Copie o caminho da pasta bin, por exemplo:
     ```
     C:\ffmpeg\bin
-
     ```
 
     - Vá em: Iniciar > Digite “Variáveis de ambiente”
@@ -27,5 +26,17 @@
     - Abra o terminal (cmd ou PowerShell) e digite:
     ```
     ffmpeg -version
+    ```
 
+
+    ### Para gerar o executável 
+    1- Instale pyinstaller
+
+    ```
+    pip install pyinstaller
+    ```
+    2 - Gere o exe
+
+    ```
+    pyinstaller --onefile --add-data "img;img" --icon=icone.ico .\app.py
     ```
