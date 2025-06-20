@@ -38,5 +38,6 @@
     2 - Gere o exe
 
     ```
-    pyinstaller --onefile --add-data "img;img" --icon=icone.ico .\app.py
+    pyinstaller --onefile --noconsole --add-data "img;img" --icon=icone.ico app.py
+
     ```

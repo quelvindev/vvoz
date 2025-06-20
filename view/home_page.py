@@ -15,10 +15,10 @@ class HomePage:
         page.window.alignment = ft.alignment.center
         page.window.width = screen_width
         page.window.height = screen_height
+
         inputs = self.column_one(screen_width,screen_height)
         page.add(inputs)
-        page.update()
-        
+        page.update() 
     
     def clear_text(self,e):
         
@@ -28,6 +28,7 @@ class HomePage:
             self.page.update()
         self.text_info.spans = [ft.TextSpan("Aguardando texto",
                     ft.TextStyle(weight=ft.FontWeight.BOLD),)]
+        
     def get_text(self,e):
          
          self.page.update()
